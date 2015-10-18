@@ -44,6 +44,24 @@ qplot(totalSteps,data=stepsPerDay,binwidth=1000,xlab="Total Steps in One Day",ma
 
 ![](PA1_template_files/figure-html/unnamed-chunk-2-1.png) 
 
+```r
+meanSteps<-prettyNum(mean(stepsPerDay$totalSteps,na.rm=TRUE),big.mark=",",digits=0)
+medianSteps<-prettyNum(median(stepsPerDay$totalSteps,na.rm=TRUE),big.mark=",")
+meanSteps
+```
+
+```
+## [1] "9,354"
+```
+
+```r
+medianSteps
+```
+
+```
+## [1] "10,395"
+```
+
 
 ####*The mean total steps per day is 9,354 and the median total steps per day is 10,395.*
 
@@ -60,6 +78,21 @@ with(stepsPerInterval,plot(time,avgSteps,type="l",xlab="Start Time of 5 Minute I
 
 ```r
 maxInterval <-stepsPerInterval$time[stepsPerInterval$avgSteps==max(stepsPerInterval$avgSteps)]
+start<-format(maxInterval,format="%H:%M")
+finish<-format(maxInterval+5*60,format="%H:%M")
+start
+```
+
+```
+## [1] "08:35"
+```
+
+```r
+finish
+```
+
+```
+## [1] "08:40"
 ```
 
 
@@ -67,6 +100,25 @@ maxInterval <-stepsPerInterval$time[stepsPerInterval$avgSteps==max(stepsPerInter
 ####*The 5 minute interval from 08:35 to 08:40 contains the maximum average number of steps.*
 
 ## Imputing missing values
+
+
+```r
+numInts<-prettyNum(length(data$date),big.mark=",")
+numMissing<-prettyNum(sum(is.na(data$steps)),big.mark=",")
+numInts
+```
+
+```
+## [1] "17,568"
+```
+
+```r
+numMissing
+```
+
+```
+## [1] "2,304"
+```
 
 ####*Of the 17,568 intervals in this data set, 2,304 have missing values.*
 
@@ -81,10 +133,28 @@ stepsPerDayInputed <- ddply(inputedData,.(date),summarize,totalSteps=sum(steps,n
 qplot(totalSteps,data=stepsPerDayInputed,binwidth=1000,xlab="Total Steps in One Day (with Imputed Data)",main="Distribution of Total Steps Per Day from 10/1/2012 to 11/30/2012")
 ```
 
-![](PA1_template_files/figure-html/unnamed-chunk-4-1.png) 
+![](PA1_template_files/figure-html/unnamed-chunk-5-1.png) 
+
+```r
+meanTotal<-prettyNum(mean(stepsPerDayInputed$totalSteps,na.rm=TRUE),big.mark=",",digits=0)
+medianTotal<-prettyNum(median(stepsPerDayInputed$totalSteps,na.rm=TRUE),big.mark=",")
+meanTotal
+```
+
+```
+## [1] "9,504"
+```
+
+```r
+medianTotal
+```
+
+```
+## [1] "10,395"
+```
 
 
-####*After data is inputed, the mean total steps per day is 9,504 and the median total steps per day is 10,395. This mean is higher than it was before values were inputed because when missing values are ignored, many steps are missed. For example, 8 days had all missing values, so these days had totals of 0 steps. These zero totals pulled the mean down. The median, however, did not change because the total inputed for days with missing values was still small (1141 steps) relative to the typical totals. Thus, the middle ranked value of these totals did not move.*
+####*After data is inputed, the mean total steps per day is 9,504 and the median total steps per day is 10,395. This mean is higher than it was before values were inputed because when missing values are ignored, many steps are missed. For example, 8 days had all missing values, so these days had totals of 0 steps. These zero totals pulled the mean down. The median, however, did not change because the total inputed for days with missing values was still small relative to the typical totals. Thus, the middle ranked value of these totals did not move.*
 
 ## Are there differences in activity patterns between weekdays and weekends?
 
@@ -100,11 +170,24 @@ byDaytype$minsPastMidnight<-as.numeric(format(byDaytype$time, "%H"))*60 + as.num
 xyplot(avgSteps ~ minsPastMidnight | daytype, data = byDaytype, layout = c(1, 2),type="l",xlab="Time Interval in # Minutes Past Midnight",ylab="Number of Steps",main="Average Number of Steps by Time Interval")
 ```
 
-![](PA1_template_files/figure-html/unnamed-chunk-5-1.png) 
+![](PA1_template_files/figure-html/unnamed-chunk-6-1.png) 
 
 ```r
 meanWeekend<-round(mean(byDaytype$avgSteps[byDaytype$daytype=="weekend"]),0)
 meanWeekday<-round(mean(byDaytype$avgSteps[byDaytype$daytype=="weekday"]),0)
+meanWeekend
+```
+
+```
+## [1] 38
+```
+
+```r
+meanWeekday
+```
+
+```
+## [1] 31
 ```
 
 ####*Activity starts earlier on weekdays, but goes later on weekends. The overall activity appears slightly higher on weekends: the overall mean is 38 steps in 5 minutes on weekends versus 31 steps on Weekdays.*
